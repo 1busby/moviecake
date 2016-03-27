@@ -72,7 +72,6 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(Void v) {
             mMovieAdapter.notifyDataSetChanged();
-            //((BaseAdapter)((GridView)getActivity().findViewById(R.id.grid_view_movies)).getAdapter()).notifyDataSetChanged();
         }
 
 
