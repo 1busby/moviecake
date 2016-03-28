@@ -3,7 +3,6 @@ package com.michael.moviecake;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,13 +34,11 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         new FetchMovieTask().execute();
-
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
         GridView gridView = (GridView) rootView.findViewById(R.id.grid_view_movies);
         mMovieAdapter = new MovieAdapter(getActivity());
-        Log.v(LOG_TAG, (Integer.toString(gridView.getColumnWidth())));
         gridView.setAdapter(mMovieAdapter);
 
         return rootView;
