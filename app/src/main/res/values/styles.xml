@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:actionBarStyle">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorText</item>
     </style>
 
 </resources>
