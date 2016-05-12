@@ -2,6 +2,10 @@ package info.movito.themoviedbapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.io.Serializable;
+import java.util.List;
+
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.core.IdElement;
 import info.movito.themoviedbapi.model.core.MovieKeywords;
@@ -10,10 +14,8 @@ import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
 
-import java.util.List;
-
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-public class MovieDb extends IdElement implements Multi {
+public class MovieDb extends IdElement implements Multi, Serializable {
 
     @JsonProperty("title")
     private String title;
