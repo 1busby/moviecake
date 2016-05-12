@@ -26,6 +26,8 @@ public class MovieFragment extends Fragment {
     SharedPreferences sharedPref;
     MovieAdapter mMovieAdapter;
     List<MovieDb> movieDbList;
+    TmdbMovies TmdbMovies;
+    TmdbApi TmdbApi;
 
     public MovieFragment() {
         // Required empty public constructor
@@ -35,6 +37,8 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        TmdbApi = new TmdbApi("e688e37074adf33cd49e7960d8705601");
+        TmdbMovies = TmdbApi.getMovies();
     }
 
     @Override
@@ -45,15 +49,16 @@ public class MovieFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
+
         GridView gridView = (GridView) rootView.findViewById(R.id.grid_view_movies);
         mMovieAdapter = new MovieAdapter(getActivity());
         gridView.setAdapter(mMovieAdapter);
         gridView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //Object movie = mMovieAdapter.getItem(position);
+                String movieID = movieDbList.get(position).getImdbID();
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, "helloworld lol");
+                        .putExtra(Intent.EXTRA_TEXT, movieID);
                 startActivity(intent);
             }
         });
@@ -66,6 +71,11 @@ public class MovieFragment extends Fragment {
         movieTask.execute();
     }
 
+
+    /****************
+    Create a new TmbdApi
+     Retrieve
+    ****************/
     public class FetchMovieTask extends AsyncTask<String, Void, Void> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
@@ -73,19 +83,18 @@ public class MovieFragment extends Fragment {
         @Override
         protected Void doInBackground(String... params) {
 
-            TmdbApi tmdbApi = new TmdbApi("e688e37074adf33cd49e7960d8705601");
-            TmdbMovies tmdbMovies = tmdbApi.getMovies();
+
             String sort_order = sharedPref.getString(getString(R.string.sort_order),
                     getString(R.string.sort_order_popular));
             MovieResultsPage movieResultsPage;
             if (sort_order.equals(getString(R.string.sort_order_popular))){
-                movieResultsPage = tmdbMovies.getPopularMovies("english", 1);
+                movieResultsPage = TmdbMovies.getPopularMovies("english", 1);
                 Log.v(LOG_TAG, "Popular");
             } else if (sort_order.equals(getString(R.string.sort_order_top_rated))) {
-                movieResultsPage = tmdbMovies.getPopularMovies("english", 1);
+                movieResultsPage = TmdbMovies.getTopRatedMovies("english", 1);
                 Log.v(LOG_TAG, "TopRated");
             } else {
-                movieResultsPage = tmdbMovies.getPopularMovies("english", 1);
+                movieResultsPage = TmdbMovies.getNowPlayingMovies("english", 1);
                 Log.v(LOG_TAG, "InTheaters");
             }
 
@@ -94,8 +103,10 @@ public class MovieFragment extends Fragment {
             MovieDb movieDb;
             for (int i = 0; i < movieDbList.size(); i++) {
                 movieDb = movieDbList.get(i);
+                //Log.v(LOG_TAG, movieDb.getImdbID());
                 posterPathArray[i] = "http://image.tmdb.org/t/p/w185/" + movieDb.getPosterPath();
             }
+            //Log.v(LOG_TAG, movieDbList.get(1).getImdbID());
             mMovieAdapter.setData(posterPathArray);
 
             return null;
