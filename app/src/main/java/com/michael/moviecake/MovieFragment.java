@@ -23,11 +23,12 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 public class MovieFragment extends Fragment {
 
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
-    SharedPreferences sharedPref;
+    SharedPreferences mSharedPref;
     MovieAdapter mMovieAdapter;
-    List<MovieDb> movieDbList;
-    TmdbMovies TmdbMovies;
-    TmdbApi TmdbApi;
+    List<MovieDb> mMovieDbList;
+    TmdbApi tmdbApi;
+    TmdbMovies mTmdbMovies;
+    MovieDb mMovieDb;
 
     public MovieFragment() {
         // Required empty public constructor
@@ -36,9 +37,9 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        TmdbApi = new TmdbApi("e688e37074adf33cd49e7960d8705601");
-        TmdbMovies = TmdbApi.getMovies();
+        mSharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        tmdbApi = new TmdbApi("e688e37074adf33cd49e7960d8705601");
+        mTmdbMovies = tmdbApi.getMovies();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class MovieFragment extends Fragment {
         gridView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String movieID = movieDbList.get(position).getImdbID();
+                String movieID = mMovieDbList.get(position).getImdbID();
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(Intent.EXTRA_TEXT, movieID);
                 startActivity(intent);
@@ -72,10 +73,12 @@ public class MovieFragment extends Fragment {
     }
 
 
-    /****************
-    Create a new TmbdApi
-     Retrieve
-    ****************/
+    /******************
+    5/11/2016 Michael Busby
+     Creates new TmbdApi object
+     Retrieves movies based on sort_order preference
+     Sets mMovieAdapter with list
+    *******************/
     public class FetchMovieTask extends AsyncTask<String, Void, Void> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
@@ -83,30 +86,28 @@ public class MovieFragment extends Fragment {
         @Override
         protected Void doInBackground(String... params) {
 
-
-            String sort_order = sharedPref.getString(getString(R.string.sort_order),
+            String sort_order = mSharedPref.getString(getString(R.string.sort_order),
                     getString(R.string.sort_order_popular));
             MovieResultsPage movieResultsPage;
             if (sort_order.equals(getString(R.string.sort_order_popular))){
-                movieResultsPage = TmdbMovies.getPopularMovies("english", 1);
+                movieResultsPage = mTmdbMovies.getPopularMovies("english", 1);
                 Log.v(LOG_TAG, "Popular");
             } else if (sort_order.equals(getString(R.string.sort_order_top_rated))) {
-                movieResultsPage = TmdbMovies.getTopRatedMovies("english", 1);
+                movieResultsPage = mTmdbMovies.getTopRatedMovies("english", 1);
                 Log.v(LOG_TAG, "TopRated");
             } else {
-                movieResultsPage = TmdbMovies.getNowPlayingMovies("english", 1);
+                movieResultsPage = mTmdbMovies.getNowPlayingMovies("english", 1);
                 Log.v(LOG_TAG, "InTheaters");
             }
 
-            movieDbList = movieResultsPage.getResults();
-            String[] posterPathArray = new String[movieDbList.size()];
-            MovieDb movieDb;
-            for (int i = 0; i < movieDbList.size(); i++) {
-                movieDb = movieDbList.get(i);
-                //Log.v(LOG_TAG, movieDb.getImdbID());
-                posterPathArray[i] = "http://image.tmdb.org/t/p/w185/" + movieDb.getPosterPath();
+            mMovieDbList = movieResultsPage.getResults();
+            String[] posterPathArray = new String[mMovieDbList.size()];
+            for (int i = 0; i < mMovieDbList.size(); i++) {
+                mMovieDb = mMovieDbList.get(i);
+                //Log.v(LOG_TAG, mMovieDb.getImdbID());
+                posterPathArray[i] = "http://image.tmdb.org/t/p/w185/" + mMovieDb.getPosterPath();
             }
-            //Log.v(LOG_TAG, movieDbList.get(1).getImdbID());
+            //Log.v(LOG_TAG, mMovieDbList.get(1).getImdbID());
             mMovieAdapter.setData(posterPathArray);
 
             return null;
