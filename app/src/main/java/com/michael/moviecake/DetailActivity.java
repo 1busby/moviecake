@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import info.movito.themoviedbapi.model.MovieDb;
+
 /**
  * Created by Michael on 4/28/2016.
  */
@@ -41,7 +43,7 @@ public class DetailActivity extends AppCompatActivity {
         private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
         private static final String MOVIE_SHARE_HASHTAG = " #CakeMovieApp";
-        private String mMovieID;
+        private MovieDb mMovieDb;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -52,8 +54,8 @@ public class DetailActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                mMovieID = intent.getStringExtra(Intent.EXTRA_TEXT);
-                ((TextView) rootView.findViewById(R.id.detail_text)).setText(mMovieID);
+                mMovieDb = (MovieDb) intent.getSerializableExtra(Intent.EXTRA_TEXT);
+                ((TextView) rootView.findViewById(R.id.detail_text)).setText(mMovieDb.getTitle());
             }
             return rootView;
         }
@@ -83,7 +85,7 @@ public class DetailActivity extends AppCompatActivity {
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT,
-                    mMovieID + MOVIE_SHARE_HASHTAG);
+                    mMovieDb + MOVIE_SHARE_HASHTAG);
             return shareIntent;
         }
     }

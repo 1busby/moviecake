@@ -26,7 +26,7 @@ public class MovieFragment extends Fragment {
     SharedPreferences mSharedPref;
     MovieAdapter mMovieAdapter;
     List<MovieDb> mMovieDbList;
-    TmdbApi tmdbApi;
+    TmdbApi mTmdbApi;
     TmdbMovies mTmdbMovies;
     MovieDb mMovieDb;
 
@@ -38,15 +38,14 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        tmdbApi = new TmdbApi("e688e37074adf33cd49e7960d8705601");
-        mTmdbMovies = tmdbApi.getMovies();
+        new CreateTmbdApiTask().execute();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        new FetchMovieTask().execute();
+        new FetchMovieOrderTask().execute();
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
@@ -57,9 +56,9 @@ public class MovieFragment extends Fragment {
         gridView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String movieID = mMovieDbList.get(position).getImdbID();
+
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, movieID);
+                        .putExtra(Intent.EXTRA_TEXT, mMovieDbList.get(position));
                 startActivity(intent);
             }
         });
@@ -68,8 +67,21 @@ public class MovieFragment extends Fragment {
     }
 
     public void updateAdapter() {
-        FetchMovieTask movieTask = new FetchMovieTask();
+        FetchMovieOrderTask movieTask = new FetchMovieOrderTask();
         movieTask.execute();
+    }
+
+    public class CreateTmbdApiTask extends AsyncTask<String, Void, Void> {
+
+        private final String LOG_TAG = CreateTmbdApiTask.class.getSimpleName();
+
+        @Override
+        protected Void doInBackground(String... params) {
+            mTmdbApi = new TmdbApi("e688e37074adf33cd49e7960d8705601");
+            mTmdbMovies = mTmdbApi.getMovies();
+
+            return null;
+        }
     }
 
 
@@ -79,9 +91,9 @@ public class MovieFragment extends Fragment {
      Retrieves movies based on sort_order preference
      Sets mMovieAdapter with list
     *******************/
-    public class FetchMovieTask extends AsyncTask<String, Void, Void> {
+    public class FetchMovieOrderTask extends AsyncTask<String, Void, Void> {
 
-        private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+        private final String LOG_TAG = FetchMovieOrderTask.class.getSimpleName();
 
         @Override
         protected Void doInBackground(String... params) {
