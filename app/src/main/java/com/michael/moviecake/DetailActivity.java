@@ -13,7 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import info.movito.themoviedbapi.model.MovieDb;
 
@@ -44,6 +47,9 @@ public class DetailActivity extends AppCompatActivity {
 
         private static final String MOVIE_SHARE_HASHTAG = " #CakeMovieApp";
         private MovieDb mMovieDb;
+        private ImageView mMovieImage;
+        private TextView mMovieTitle;
+        private TextView mMovieDescription;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -53,9 +59,15 @@ public class DetailActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             Intent intent = getActivity().getIntent();
-            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                mMovieDb = (MovieDb) intent.getSerializableExtra(Intent.EXTRA_TEXT);
-                ((TextView) rootView.findViewById(R.id.detail_text)).setText(mMovieDb.getTitle());
+            if (intent != null && intent.hasExtra(Intent.EXTRA_SUBJECT)) {
+                mMovieDb = (MovieDb) intent.getSerializableExtra(Intent.EXTRA_SUBJECT);
+                ((TextView) rootView.findViewById(R.id.movie_title_text)).setText(mMovieDb.getTitle());
+                Picasso.with(getContext())
+                        .load("http://image.tmdb.org/t/p/w185/" + mMovieDb.getPosterPath())
+                        .into((ImageView) rootView.findViewById(R.id.movie_poster_image));
+                ((TextView) rootView.findViewById(R.id.movie_release_text)).setText(mMovieDb.getReleaseDate());
+                ((TextView) rootView.findViewById(R.id.movie_vote_text)).setText(Integer.toString(mMovieDb.getVoteCount()));
+                ((TextView) rootView.findViewById(R.id.movie_desc_text)).setText(mMovieDb.getOverview());
             }
             return rootView;
         }
@@ -73,14 +85,14 @@ public class DetailActivity extends AppCompatActivity {
             // Attach an intent to this ShareActionProvider.  You can update this at any time,
             // like when the user selects a new piece of data they might like to share.
             if (mShareActionProvider != null ) {
-                mShareActionProvider.setShareIntent(createShareForecastIntent());
+                mShareActionProvider.setShareIntent(createShareMovieIntent());
             } else {
                 Log.d(LOG_TAG, "Share Action Provider is null?");
             }
 
         }
 
-        private Intent createShareForecastIntent() {
+        private Intent createShareMovieIntent() {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");

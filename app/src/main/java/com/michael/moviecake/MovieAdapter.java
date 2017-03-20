@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -37,16 +38,18 @@ public class MovieAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 500));
 
 
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(7, 7, 7, 7);
         } else {
             imageView = (ImageView) convertView;
         }
 
         Picasso.with(mContext)
                 .load(mPosterThumbs[position])
+                .placeholder(R.drawable.cake)
                 .into(imageView);
         return imageView;
     }
