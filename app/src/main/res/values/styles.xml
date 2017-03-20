@@ -8,4 +8,17 @@
         <item name="android:textColor">@color/colorText</item>
     </style>
 
+    <style name="MaterialAnimations" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="android:windowEnterTransition">@transition/activity_slide</item>
+        <item name="android:windowExitTransition">@transition/activity_slide</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">@transition/comp_change_bounds</item>
+        <item name="android:windowSharedElementExitTransition">@transition/comp_change_bounds</item>
+
+    </style>
+
 </resources>

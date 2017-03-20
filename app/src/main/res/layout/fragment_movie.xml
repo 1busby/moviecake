@@ -10,9 +10,10 @@
         android:id="@+id/grid_view_movies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
         android:columnWidth="100dp"
-        android:numColumns="auto_fit" />
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"/>
 
 </FrameLayout>

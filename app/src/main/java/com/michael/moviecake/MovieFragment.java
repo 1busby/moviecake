@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ public class MovieFragment extends Fragment {
 
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
     SharedPreferences mSharedPref;
+    GridView mGridView;
     MovieAdapter mMovieAdapter;
     List<MovieDb> mMovieDbList;
     TmdbApi mTmdbApi;
@@ -50,10 +53,10 @@ public class MovieFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
 
-        GridView gridView = (GridView) rootView.findViewById(R.id.grid_view_movies);
+        mGridView = (GridView) rootView.findViewById(R.id.grid_view_movies);
         mMovieAdapter = new MovieAdapter(getActivity());
-        gridView.setAdapter(mMovieAdapter);
-        gridView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+        mGridView.setAdapter(mMovieAdapter);
+        mGridView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
@@ -68,6 +71,7 @@ public class MovieFragment extends Fragment {
 
     public void updateAdapter() {
         FetchMovieOrderTask movieTask = new FetchMovieOrderTask();
+        mGridView.smoothScrollToPosition(0);
         movieTask.execute();
     }
 
@@ -100,26 +104,30 @@ public class MovieFragment extends Fragment {
 
             String sort_order = mSharedPref.getString(getString(R.string.sort_order),
                     getString(R.string.sort_order_popular));
-            MovieResultsPage movieResultsPage;
+            MovieResultsPage movieResultsPage1;
+            MovieResultsPage movieResultsPage2;
             if (sort_order.equals(getString(R.string.sort_order_popular))){
-                movieResultsPage = mTmdbMovies.getPopularMovies("english", 1);
+                movieResultsPage1 = mTmdbMovies.getPopularMovies("english", 1);
+                movieResultsPage2 = mTmdbMovies.getPopularMovies("english", 2);
                 Log.v(LOG_TAG, "Popular");
             } else if (sort_order.equals(getString(R.string.sort_order_top_rated))) {
-                movieResultsPage = mTmdbMovies.getTopRatedMovies("english", 1);
+                movieResultsPage1 = mTmdbMovies.getTopRatedMovies("english", 1);
+                movieResultsPage2 = mTmdbMovies.getTopRatedMovies("english", 2);
                 Log.v(LOG_TAG, "TopRated");
             } else {
-                movieResultsPage = mTmdbMovies.getNowPlayingMovies("english", 1);
+                movieResultsPage1 = mTmdbMovies.getNowPlayingMovies("english", 1);
+                movieResultsPage2 = mTmdbMovies.getNowPlayingMovies("english", 2);
                 Log.v(LOG_TAG, "InTheaters");
             }
 
-            mMovieDbList = movieResultsPage.getResults();
+            mMovieDbList = movieResultsPage1.getResults();
+            mMovieDbList.addAll(movieResultsPage2.getResults());
             String[] posterPathArray = new String[mMovieDbList.size()];
             for (int i = 0; i < mMovieDbList.size(); i++) {
                 mMovieDb = mMovieDbList.get(i);
-                //Log.v(LOG_TAG, mMovieDb.getImdbID());
                 posterPathArray[i] = "http://image.tmdb.org/t/p/w185/" + mMovieDb.getPosterPath();
             }
-            //Log.v(LOG_TAG, mMovieDbList.get(1).getImdbID());
+
             mMovieAdapter.setData(posterPathArray);
 
             return null;

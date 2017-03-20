@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,11 +33,17 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        setupWindowAnimations();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container2, new DetailFragment())
                     .commit();
         }
+    }
+
+    private void setupWindowAnimations() {
+        Slide slide = (Slide) TransitionInflater.from(this).inflateTransition(R.transition.activity_slide);
+        getWindow().setEnterTransition(slide);
     }
 
     /**

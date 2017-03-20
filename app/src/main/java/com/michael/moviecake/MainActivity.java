@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(getString(R.string.sort_order_in_theaters));
+
+        setupWindowAnimations();
 
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         prefEditor = sharedPref.edit();
@@ -80,10 +86,16 @@ public class MainActivity extends AppCompatActivity {
             String data = (String)parent.getItemAtPosition(position);
             prefEditor.putString(getString(R.string.sort_order), data);
             prefEditor.commit();
+            setTitle(data);
             MovieFragment mMovieFragment =
                     (MovieFragment) getSupportFragmentManager().findFragmentByTag("movie_fragment");
             mMovieFragment.updateAdapter();
             mDrawerLayout.closeDrawer(mDrawerList);
         }
+    }
+
+    private void setupWindowAnimations() {
+        Slide slide = (Slide) TransitionInflater.from(this).inflateTransition(R.transition.activity_slide);
+        getWindow().setExitTransition(slide);
     }
 }
