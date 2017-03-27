@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by Michael on 3/23/2016.
+ * GridView adapter; interface for populating movie poster GridView
  */
 public class MovieAdapter extends BaseAdapter {
     private Context mContext;
@@ -38,6 +38,7 @@ public class MovieAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
+            imageView.setTransitionName("transition:POSTER");
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 500));
 

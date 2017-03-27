@@ -22,6 +22,7 @@
             android:layout_alignParentTop="true"/>
         <ImageView
             android:id="@+id/movie_poster_image"
+            android:transitionName="@string/transition_name_poster"
             android:layout_width="134dp"
             android:layout_height="200dp"
             android:elevation="2dp"

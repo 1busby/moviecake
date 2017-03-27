@@ -1,7 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.michael.moviecake.DetailActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
+
+    <fragment android:name="com.michael.moviecake.DetailActivity$DetailFragment"
+        android:id="@+id/list"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

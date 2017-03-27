@@ -34,11 +34,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         setupWindowAnimations();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container2, new DetailFragment())
-                    .commit();
-        }
+
     }
 
     private void setupWindowAnimations() {
